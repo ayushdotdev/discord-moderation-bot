@@ -3,6 +3,10 @@ from dotenv import load_dotenv
 import nextcord
 from nextcord.ext import commands
 
+cmds = [
+  "cogs.moderation"
+  ]
+
 intents = nextcord.Intents.default()
 intents.message_content = True
 
@@ -16,4 +20,6 @@ async def on_ready():
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 if __name__ == '__main__':
+  for i in cmds:
+    bot.load_extension(i)
   bot.run(token)
