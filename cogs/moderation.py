@@ -52,5 +52,53 @@ class moderation(commands.Cog):
         ))
     else:
       raise error
+  
+   
+   #ban command
+  @commands.command(name = 'ban')
+  @commands.has_permissions(ban_members = True)
+  async def ban(self,ctx, member: nextcord.Member, *,reason = "No reason provided"):
+    if member == ctx.author or member == ctx.guild.me:
+      return await ctx.send(embed = nextcord.Embed(
+        color = 0xed2939,
+        description = f"<:zaroError:1411668741053349908> **_I cannot ban that user._**"
+        ))
+          
+    if member.top_role >= ctx.guild.me.top_role:
+      return await ctx.send(embed = nextcord.Embed(
+        color = 0xed2939,
+        description = f"<:zaroError:1411668741053349908> **_My role isn't high enough to moderate this user. Move me role up above other roles._**"
+        ))
+        
+    try:
+      embedban = nextcord.Embed(
+        title = f"banned from {ctx.guild.name}",
+        description = f"You have been **banned** from **{ctx.guild}** \n\n**Reason:** \n{reason}",
+        color = 0xff2400
+      )
+      await member.send(embed = embedban)
+    except:
+      pass
+    await member.ban(reason = reason)
+    embedone = nextcord.Embed(
+      color = 0x48a860,
+      description = f"<:zaroSucces:1411668840181534851> **{member} was banned**"
+      )
+    await ctx.send(embed = embedone)
+    
+  @ban.error
+  async def ban_error(self,ctx,error):
+    if isinstance(error, commands.MissingPermissions):
+      await ctx.send(embed = nextcord.Embed(
+        color = 0xed2939,
+        description = f"<:zaroError:1411668741053349908> **_You don't have permissions to use this command._**"
+        ))
+    elif isinstance(error, commands.BadArgument):
+      await ctx.send(embed = nextcord.Embed(
+        color = 0xed2939,
+        description = f"<:zaroError:1411668741053349908> **_I cannot find this user._**"
+        ))
+    else:
+      raise error
 def setup(bot):
   bot = bot.add_cog(moderation(bot))
