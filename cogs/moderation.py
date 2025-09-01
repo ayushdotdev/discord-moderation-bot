@@ -122,7 +122,7 @@ class moderation(commands.Cog):
     try:
       inviter = await ctx.channel.create_invite()
       embedban = nextcord.Embed(
-        title = f"SoftBanned from {ctx.guild.name}",
+        title = f"Softbanned from {ctx.guild.name}",
         description = f"You have been **softbanned** from **{ctx.guild}** \n\n**Reason:** \n{reason}\nHere's the link to join again\n{inviter}",
         color = 0xff2400
       )
