@@ -192,5 +192,54 @@ class moderation(commands.Cog):
       
   #mute command ends
    
+   
+  # warn command starts 
+  @commands.command(name="warn", aliases = ["w"])
+  @commands.has_permissions(moderate_members = True)
+  async def warn(self,ctx, member: nextcord.Member, *, reason):
+    if member.bot:
+      return await ctx.send(embed = nextcord.Embed(
+        color = 0xed2939,
+        description = f"<:zaroError:1411668741053349908> **_You cannot warn a bot.._**"
+        ))
+    if member == ctx.author or member == ctx.guild.me:
+      return await ctx.send(embed = nextcord.Embed(
+        color = 0xed2939,
+        description = f"<:zaroError:1411668741053349908> **_I cannot warn that user._**"
+        ))
+    if member.top_role >= ctx.guild.me.top_role:
+      return await ctx.send(embed = nextcord.Embed(
+        color = 0xed2939,
+        description = f"<:zaroError:1411668741053349908> **_My role isn't high enough to moderate this user. Move me role up above other roles._**"
+        ))
+    try:
+      await member.send(embed = nextcord.Embed(
+        title = f"Warned in {ctx.guild.name}",
+        description = f"You have been **warned** in **{ctx.guild}** \n\n**Reason:** \n{reason}",
+        color = 0xff2400
+        ))
+    except:
+      pass
+    await ctx.send(embed = nextcord.Embed(
+      color = 0x48a860,
+      description = f"<:zaroSucces:1411668840181534851> **{member} was warned**"
+      ))
+    
+  @warn.error
+  async def warn_error(self,ctx,error):
+    if isinstance(error, commands.MissingPermissions):
+      await ctx.send(embed = nextcord.Embed(
+        color = 0xed2939,
+        description = f"<:zaroError:1411668741053349908> **_You don't have permissions to use this command._**"
+        ))
+    elif isinstance(error, commands.BadArgument):
+      await ctx.send(embed = nextcord.Embed(
+        color = 0xed2939,
+        description = f"<:zaroError:1411668741053349908> **_I cannot find this user._**"
+        ))
+    else:
+      raise error
+    
+  # warn command ends
 def setup(bot):
   bot = bot.add_cog(moderation(bot))
