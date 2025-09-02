@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 import datetime
-
+from main import global_rep,global_rep_cursor,config,config_cursor
 class moderation(commands.Cog):
   def __init__(self,bot):
     self.bot = bot
@@ -39,6 +39,12 @@ class moderation(commands.Cog):
       )
     await ctx.send(embed = embedone)
     
+    global_rep_cursor.execute("""
+    INSERT INTO reputation(user_id, guild_id, kicks)
+    VALUES (?, ?, 1)
+    ON CONFLICT(user_id, guild_id) DO UPDATE SET kicks = kicks + 1
+    """, (member.id, ctx.guild.id))
+    global_rep.commit()
   @kick.error
   async def kick_error(self,ctx,error):
     if isinstance(error, commands.MissingPermissions):
@@ -81,6 +87,12 @@ class moderation(commands.Cog):
     except:
       pass
     await member.ban(reason = reason)
+    global_rep_cursor.execute("""
+    INSERT INTO reputation(user_id, guild_id, bans)
+    VALUES (?, ?, 1)
+    ON CONFLICT(user_id, guild_id) DO UPDATE SET bans = bans + 1
+    """, (member.id, ctx.guild.id))
+    global_rep.commit()
     embedone = nextcord.Embed(
       color = 0x48a860,
       description = f"<:zaroSucces:1411668840181534851> **{member} was banned**"
@@ -131,6 +143,12 @@ class moderation(commands.Cog):
       pass
     await member.ban(reason = reason)
     await member.unban()
+    global_rep_cursor.execute("""
+    INSERT INTO reputation(user_id, guild_id, kicks)
+    VALUES (?, ?, 1)
+    ON CONFLICT(user_id, guild_id) DO UPDATE SET kicks = kicks + 1
+    """, (member.id, ctx.guild.id))
+    global_rep.commit()
     embedone = nextcord.Embed(
       color = 0x48a860,
       description = f"<:zaroSucces:1411668840181534851> **{member} was softbanned**"
@@ -170,6 +188,12 @@ class moderation(commands.Cog):
         ))
     minutes = datetime.timedelta(minutes = duration)
     await member.edit(timeout=nextcord.utils.utcnow() + minutes)
+    global_rep_cursor.execute("""
+    INSERT INTO reputation(user_id, guild_id, mutes)
+    VALUES (?, ?, 1)
+    ON CONFLICT(user_id, guild_id) DO UPDATE SET mutes = mutes + 1
+    """, (member.id, ctx.guild.id))
+    global_rep.commit()
     await ctx.send(embed = nextcord.Embed(
       color = 0x48a860,
       description = f"<:zaroSucces:1411668840181534851> **{member} was mute for {minutes} minutes.**"
@@ -224,7 +248,31 @@ class moderation(commands.Cog):
       color = 0x48a860,
       description = f"<:zaroSucces:1411668840181534851> **{member} was warned**"
       ))
+    global_rep_cursor.execute("""
+    INSERT INTO reputation(user_id, guild_id, warnings)
+    VALUES (?, ?, 1)
+    ON CONFLICT(user_id, guild_id) DO UPDATE SET warnings = warnings + 1
+    """, (member.id, ctx.guild.id))
+    global_rep.commit()
     
+    global_rep_cursor.execute("""
+    SELECT warnings
+    FROM reputation
+    WHERE user_id = ? AND guild_id = ?
+    """,(member.id,ctx.guild.id))
+    wrn = global_rep_cursor.fetchone()
+    if wrn[0] == 3:
+      await member.kick(reason = "3 warnings")
+      await ctx.send(embed = nextcord.Embed(
+        color: 0xff00c8,
+        description: f'<:zaroThreat:1412465462129852527> User has been kicked for getting 3 warnings'
+        ))
+    elif wrn[0] > 3:
+      await member.ban(reason = f'{wrn[0]} warnings')
+      await ctx.send(embed = nextcord.Embed(
+        color: 0xff00c8,
+        description: f'<:zaroThreat:1412465462129852527> User has been banned for exceeding 3 warnings'
+        ))
   @warn.error
   async def warn_error(self,ctx,error):
     if isinstance(error, commands.MissingPermissions):

@@ -46,9 +46,14 @@ cmds = [
 
 intents = nextcord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 def get_prefix(bot, message):
-    return commands.when_mentioned_or("!")(bot, message)
+    config_cursor.execute("""
+      SELECT server_prefix FROM config WHERE server_id = ?
+      """,(message.guild.id,))
+    row = config_cursor.fetchone()
+    return commands.when_mentioned_or(row[0])(bot, message)
 
 bot = commands.Bot(command_prefix=get_prefix, intents=intents)
 
