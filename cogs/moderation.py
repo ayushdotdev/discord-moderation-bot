@@ -136,7 +136,7 @@ class moderation(commands.Cog):
       embedban = nextcord.Embed(
         title = f"Softbanned from {ctx.guild.name}",
         description = f"You have been **softbanned** from **{ctx.guild}** \n\n**Reason:** \n{reason}\nHere's the link to join again\n{inviter}",
-        color = 0xff2400
+        color = 0xdd571c
       )
       await member.send(embed = embedban)
     except:
@@ -156,7 +156,7 @@ class moderation(commands.Cog):
     await ctx.send(embed = embedone)
     
   @softban.error
-  async def ban_error(self,ctx,error):
+  async def softban_error(self,ctx,error):
     if isinstance(error, commands.MissingPermissions):
       await ctx.send(embed = nextcord.Embed(
         color = 0xed2939,
@@ -240,7 +240,7 @@ class moderation(commands.Cog):
       await member.send(embed = nextcord.Embed(
         title = f"Warned in {ctx.guild.name}",
         description = f"You have been **warned** in **{ctx.guild}** \n\n**Reason:** \n{reason}",
-        color = 0xff2400
+        color = 0xdaa520
         ))
     except:
       pass
@@ -265,14 +265,32 @@ class moderation(commands.Cog):
       await member.kick(reason = "3 warnings")
       await ctx.send(embed = nextcord.Embed(
         color: 0xff00c8,
-        description: f'<:zaroThreat:1412465462129852527> User has been kicked for getting 3 warnings'
+        description: f'<:zaroThreat:1412465462129852527> User has been kicked for receiving 3 warnings'
         ))
-    elif wrn[0] > 3:
+      try:
+        embedkick = nextcord.Embed(
+        title = f"Kicked from {ctx.guild.name}",
+        description = f"You have been **kicked** from **{ctx.guild}** \n\n**Reason:** \nReceiving 3 warnings",
+        color = 0xe24c00
+      )
+        await member.send(embed = embedkick)
+      except:
+       pass
+    elif wrn[0] == 5:
       await member.ban(reason = f'{wrn[0]} warnings')
       await ctx.send(embed = nextcord.Embed(
-        color: 0xff00c8,
-        description: f'<:zaroThreat:1412465462129852527> User has been banned for exceeding 3 warnings'
+        color = 0xff00c8,
+        description = f'<:zaroThreat:1412465462129852527> User has been banned for exceeding 3 warnings'
         ))
+      try:
+        embedkick = nextcord.Embed(
+         title = f"Banned from {ctx.guild.name}",
+          description = f"You have been **banned** from **{ctx.guild}** \n\n**Reason:** \nReceiving {wrn[0]} warnings",
+          color = 0xff2400
+      )
+      await member.send(embed = embedkick)
+      except:
+        pass
   @warn.error
   async def warn_error(self,ctx,error):
     if isinstance(error, commands.MissingPermissions):
