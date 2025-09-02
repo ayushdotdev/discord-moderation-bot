@@ -41,7 +41,8 @@ def initialize_config(guild_id):
 
 
 cmds = [
-  "cogs.moderation"
+  "cogs.moderation",
+  "cogs.administrator"
   ]
 
 intents = nextcord.Intents.default()
@@ -63,6 +64,9 @@ async def on_ready():
   await bot.change_presence(
   activity = nextcord.Game(name = '!help')
   )
+  for guild in bot.guilds:
+    initialize_config(guild.id)
+    print("Done initialisation")
 
 @bot.event
 async def on_guild_join(guild):

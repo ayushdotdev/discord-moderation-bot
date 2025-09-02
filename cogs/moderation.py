@@ -220,7 +220,7 @@ class moderation(commands.Cog):
   # warn command starts 
   @commands.command(name="warn", aliases = ["w"])
   @commands.has_permissions(moderate_members = True)
-  async def warn(self,ctx, member: nextcord.Member, *, reason):
+  async def warn(self,ctx, member: nextcord.Member, *, reason = "No reason provided"):
     if member.bot:
       return await ctx.send(embed = nextcord.Embed(
         color = 0xed2939,
@@ -264,8 +264,8 @@ class moderation(commands.Cog):
     if wrn[0] == 3:
       await member.kick(reason = "3 warnings")
       await ctx.send(embed = nextcord.Embed(
-        color: 0xff00c8,
-        description: f'<:zaroThreat:1412465462129852527> User has been kicked for receiving 3 warnings'
+        color = 0xff00c8,
+        description =  f'<:zaroThreat:1412465462129852527> User has been kicked for receiving 3 warnings'
         ))
       try:
         embedkick = nextcord.Embed(
@@ -288,7 +288,7 @@ class moderation(commands.Cog):
           description = f"You have been **banned** from **{ctx.guild}** \n\n**Reason:** \nReceiving {wrn[0]} warnings",
           color = 0xff2400
       )
-      await member.send(embed = embedkick)
+        await member.send(embed = embedkick)
       except:
         pass
   @warn.error
