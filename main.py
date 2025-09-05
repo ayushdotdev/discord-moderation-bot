@@ -72,20 +72,21 @@ async def on_member_join(member):
     channel = member.guild.get_channel(invite_chan[0])
     if channel:
       global_rep_cursor.execute("""
-      SELECT SUM(kicks),SUM(bans),SUM(mutes)
+      SELECT SUM(kicks),SUM(bans),SUM(mutes), SUM(warnings)
       FROM reputation
       WHERE user_id = ?
       """,(member.id,))
       result = global_rep_cursor.fetchone()
       if result:
-        total_kicks, total_bans, total_mutes = result
+        total_kicks, total_bans, total_mutes, total_warnings = result
         total_kicks = total_kicks or 0
         total_bans = total_bans or 0
         total_mutes = total_mutes or 0
+        total_warnings = total_warnings or 0
         
         await channel.send(embed = nextcord.Embed(
           color = 0x242422,
-          description = f"{member.mention} just joined. They have received {total_bans} bans, {total_kicks} kicks and {total_mutes} mutes across all the servers I'm in."
+          description = f"{member.mention} just joined. They have received {total_bans} bans, {total_kicks} kicks, {total_warnings} warnings, and {total_mutes} mutes across all the servers I'm in."
           ))
 
 @bot.event
