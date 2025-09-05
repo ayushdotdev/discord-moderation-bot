@@ -1,8 +1,6 @@
-# 🌟 Zaro Moderation Bot
+# 🌟 Moderation Bot
 
-**Status:** 🚧 *Still in development – launching soon!*
-
-Zaro is a powerful, easy-to-use Discord moderation bot designed to help server admins manage their communities effectively. Built with Python and SQLite, Zaro tracks warnings, kicks, bans, and mutes per user across guilds, ensuring a structured and fair moderation system.
+A powerful, easy-to-use Discord moderation bot designed to help server admins manage their communities effectively. Built with Python and SQLite, Zaro tracks warnings, kicks, bans, and mutes per user across guilds, ensuring a structured and fair moderation system.
 
 ---
 
@@ -21,7 +19,7 @@ Zaro is a powerful, easy-to-use Discord moderation bot designed to help server a
 
 1. **Clone the repository**  
 ```bash
-git clone https://github.com/fetchbrain/zaro.git
+git clone https://github.com/ayushdotdev/discord-moderation-bot.git
 cd zaro
 ```
 
