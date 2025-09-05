@@ -13,8 +13,8 @@ class misc(commands.Cog):
   @commands.command(name = "invite")
   async def invite(self,ctx):
     await ctx.send(embed = nextcord.Embed(
-      color = 0xff00c8
-      description
+      color = 0xff00c8,
+      description = ""
       ))
 
 def setup(bot):

@@ -1,7 +1,7 @@
 from main import config_cursor,config
 config_cursor.execute("""
 ALTER TABLE config
-ADD COLOUMN invitelog_channel INTEGER DEAFULT NULL
+ADD COLOUM invitelog_channel INTEGER DEFAULT NULL
 """)
 config.commit()
 

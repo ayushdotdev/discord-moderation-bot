@@ -26,7 +26,8 @@ config_cursor.execute("""
 CREATE TABLE IF NOT EXISTS config(
   server_id INTEGER PRIMARY KEY,
   server_prefix TEXT DEFAULT '!',
-  modlog_channel INTEGER
+  modlog_channel INTEGER,
+  invitelog_channel INTEGER
 )
 """)
 config.commit()
@@ -43,8 +44,7 @@ def initialize_config(guild_id):
 cmds = [
   "cogs.moderation",
   "cogs.administrator",
-  "cogs.misc",
-  "cogs.help"
+  "cogs.misc"
   ]
 
 intents = nextcord.Intents.default()
