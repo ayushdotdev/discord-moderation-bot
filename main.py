@@ -43,7 +43,8 @@ def initialize_config(guild_id):
 cmds = [
   "cogs.moderation",
   "cogs.administrator",
-  "cogs.misc"
+  "cogs.misc",
+  "cogs.help"
   ]
 
 intents = nextcord.Intents.default()
@@ -57,7 +58,7 @@ def get_prefix(bot, message):
     row = config_cursor.fetchone()
     return commands.when_mentioned_or(row[0])(bot, message)
 
-bot = commands.Bot(command_prefix=get_prefix, intents=intents)
+bot = commands.Bot(command_prefix=get_prefix, intents=intents, help_command = None)
 
 @bot.event
 async def on_ready():
