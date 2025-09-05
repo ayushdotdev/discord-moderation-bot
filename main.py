@@ -61,6 +61,34 @@ def get_prefix(bot, message):
 bot = commands.Bot(command_prefix=get_prefix, intents=intents, help_command = None)
 
 @bot.event
+async def on_member_join(member):
+  config_cursor.execute("""
+    SELECT invitelog_channel
+    FROM config
+    WHERE server_id = ?
+    """,(member.guild.id,))
+  invite_chan = config_cursor.fetchone()
+  if invite_chan and invite_chan[0]:
+    channel = member.guild.get_channel(invite_chan[0])
+    if channel:
+      global_rep_cursor.execute("""
+      SELECT SUM(kicks),SUM(bans),SUM(mutes)
+      FROM reputation
+      WHERE user_id = ?
+      """,(member.id,))
+      result = global_rep_cursor.fetchone()
+      if result:
+        total_kicks, total_bans, total_mutes = result
+        total_kicks = total_kicks or 0
+        total_bans = total_bans or 0
+        total_mutes = total_mutes or 0
+        
+        await channel.send(embed = nextcord.Embed(
+          color = 0x242422,
+          description = f"{member.mention} just joined. They have received {total_bans} bans, {total_kicks} kicks and {total_mutes} mutes across all the servers I'm in."
+          ))
+
+@bot.event
 async def on_ready():
   print(f'Logged in as {bot.user.name}')
   await bot.change_presence(
