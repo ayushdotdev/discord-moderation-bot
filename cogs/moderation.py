@@ -38,7 +38,20 @@ class moderation(commands.Cog):
       description = f"<:zaroSucces:1411668840181534851> **{member} was kicked**"
       )
     await ctx.send(embed = embedone)
-    
+    config_cursor.execute("""
+    SELECT modlog_channel
+    FROM config
+    WHERE server_id = ?
+    """,(ctx.guild.id,))
+    logger = config_cursor.fetchone()
+    if logger and logger[0]:
+      chan = ctx.guild.get_channel(logger[0])
+      if chan:
+        await chan.send(embed = nextcord.Embed(
+          color = 0x242422,
+          title = "**Member Kicked**",
+          description = f"User {member.name} got kicked by {ctx.author.name} for the reason:\n{reason}"
+          ))
     global_rep_cursor.execute("""
     INSERT INTO reputation(user_id, guild_id, kicks)
     VALUES (?, ?, 1)
