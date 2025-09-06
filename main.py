@@ -40,7 +40,7 @@ def initialize_config(guild_id):
     config.commit()
 
 
-
+# cog list
 cmds = [
   "cogs.moderation",
   "cogs.administrator",
