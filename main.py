@@ -44,7 +44,8 @@ def initialize_config(guild_id):
 cmds = [
   "cogs.moderation",
   "cogs.administrator",
-  "cogs.misc"
+  "cogs.misc",
+  "cogs.general"
   ]
 
 intents = nextcord.Intents.default()
