@@ -100,6 +100,20 @@ class moderation(commands.Cog):
     except:
       pass
     await member.ban(reason = reason)
+    config_cursor.execute("""
+    SELECT modlog_channel
+    FROM config
+    WHERE server_id = ?
+    """,(ctx.guild.id,))
+    logger = config_cursor.fetchone()
+    if logger and logger[0]:
+      chan = ctx.guild.get_channel(logger[0])
+      if chan:
+        await chan.send(embed = nextcord.Embed(
+          color = 0x242422,
+          title = "**Member Banned**",
+          description = f"User {member.name} got banned by {ctx.author.name} for the reason:\n{reason}"
+          ))
     global_rep_cursor.execute("""
     INSERT INTO reputation(user_id, guild_id, bans)
     VALUES (?, ?, 1)
@@ -156,6 +170,20 @@ class moderation(commands.Cog):
       pass
     await member.ban(reason = reason)
     await member.unban()
+    config_cursor.execute("""
+    SELECT modlog_channel
+    FROM config
+    WHERE server_id = ?
+    """,(ctx.guild.id,))
+    logger = config_cursor.fetchone()
+    if logger and logger[0]:
+      chan = ctx.guild.get_channel(logger[0])
+      if chan:
+        await chan.send(embed = nextcord.Embed(
+          color = 0x242422,
+          title = "**Member Softbanned**",
+          description = f"User {member.name} got softbanned by {ctx.author.name} for the reason:\n{reason}"
+          ))
     global_rep_cursor.execute("""
     INSERT INTO reputation(user_id, guild_id, kicks)
     VALUES (?, ?, 1)
@@ -201,6 +229,22 @@ class moderation(commands.Cog):
         ))
     minutes = datetime.timedelta(minutes = duration)
     await member.edit(timeout=nextcord.utils.utcnow() + minutes)
+    
+    config_cursor.execute("""
+    SELECT modlog_channel
+    FROM config
+    WHERE server_id = ?
+    """,(ctx.guild.id,))
+    logger = config_cursor.fetchone()
+    if logger and logger[0]:
+      chan = ctx.guild.get_channel(logger[0])
+      if chan:
+        await chan.send(embed = nextcord.Embed(
+          color = 0x242422,
+          title = "**Member Muted**",
+          description = f"User {member.name} got muted by {ctx.author.name} for the reason:\n{reason}"
+          ))
+    
     global_rep_cursor.execute("""
     INSERT INTO reputation(user_id, guild_id, mutes)
     VALUES (?, ?, 1)
@@ -211,6 +255,8 @@ class moderation(commands.Cog):
       color = 0x48a860,
       description = f"<:zaroSucces:1411668840181534851> **{member} was mute for {minutes} minutes.**"
       ))
+  
+  
   
   @mute.error
   async def mute_error(self,ctx,error):
@@ -261,6 +307,20 @@ class moderation(commands.Cog):
       color = 0x48a860,
       description = f"<:zaroSucces:1411668840181534851> **{member} was warned**"
       ))
+    config_cursor.execute("""
+    SELECT modlog_channel
+    FROM config
+    WHERE server_id = ?
+    """,(ctx.guild.id,))
+    logger = config_cursor.fetchone()
+    if logger and logger[0]:
+      chan = ctx.guild.get_channel(logger[0])
+      if chan:
+        await chan.send(embed = nextcord.Embed(
+          color = 0x242422,
+          title = "**Member Warned**",
+          description = f"User {member.name} got warned by {ctx.author.name} for the reason:\n{reason}"
+          ))
     global_rep_cursor.execute("""
     INSERT INTO reputation(user_id, guild_id, warnings)
     VALUES (?, ?, 1)
